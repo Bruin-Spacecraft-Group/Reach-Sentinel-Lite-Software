@@ -408,9 +408,9 @@ bool getGPSData(struct datapacket* packet) {
     packet->GPS_minute = GPS.minute;
     packet->GPS_seconds = GPS.seconds;
   } else {
-    packet->GPS_latitude = myNAN;
-    packet->GPS_longitude = myNAN;
-    packet->GPS_altitude = myNAN;
+    packet->GPS_latitude = 0;
+    packet->GPS_longitude = 0;
+    packet->GPS_altitude = 0;
     packet->GPS_hour = 0;
     packet->GPS_minute = 0;
     packet->GPS_seconds = 0;
