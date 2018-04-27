@@ -14,6 +14,7 @@
 // If using software serial, keep this line enabled
 // (you can change the pin numbers to match your wiring):
 SoftwareSerial mySerial(3, 2); // (RX, TX)
+SoftwareSerial toTheSDArduino(5, 6);
 Adafruit_GPS GPS(&mySerial);
 
 
@@ -94,6 +95,7 @@ struct datapacket {
 
 void setup() {
   Serial.begin(115200);
+  toTheSDArduino.begin(115200);
 
   // Initialising Accelerometer
   if(!accel.begin()) {
@@ -566,7 +568,15 @@ void loop() {
     
     Serial.println(F("Populating packet"));
     populateDataPacket(&currentPacket);
-  
+
+    Serial.println(F("Sending to SD Arduino..."));
+    byte sd_tx_buf[sizeof(datapacket)] = {0};
+    int zize = sizeof(currentPacket);
+    memcpy(sd_tx_buf, &currentPacket, zize);
+    toTheSDArduino.write((uint8_t *)sd_tx_buf, zize);
+    toTheSDArduino.write('\n');
+    Serial.println(F("Done."));
+    
     Serial.println(F("Printing packet"));
     //printDataPacket(&currentPacket);
     Serial.println(currentPacket.timestamp);
