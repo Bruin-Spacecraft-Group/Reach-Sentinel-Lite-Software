@@ -1,4 +1,24 @@
+/*
+  SD card read/write
+
+ This example shows how to read and write data to and from an SD card file
+ The circuit:
+ * SD card attached to SPI bus as follows:
+ ** MOSI - pin 11
+ ** MISO - pin 12
+ ** CLK - pin 13
+ ** CS - pin 4 (for MKRZero SD: SDCARD_SS_PIN)
+
+ */
+
+
+
 #include <SoftwareSerial.h>
+#include <SPI.h>
+#include <SD.h>
+
+File myFile;
+bool sdFail = true;
 
 // 1421 Right
 // 1411 Left 
@@ -27,6 +47,10 @@ SoftwareSerial mySerial(3, 2); // RX, TX
 byte tx_buf[sizeof(datapacket)] = {0};
 
 String unpack_packet(uint8_t* recvbuf) {
+    myFile = SD.open("test.txt", FILE_WRITE);     //https://www.arduino.cc/en/Reference/SDopen
+
+  // if the file opened okay, write to it:
+  
      memcpy(&currentPacket, recvbuf, sizeof(currentPacket));
      String ret;
      ret += String(currentPacket.timestamp) + ",";
@@ -36,7 +60,16 @@ String unpack_packet(uint8_t* recvbuf) {
      ret += String(currentPacket.GPS_hour) + "," + String(currentPacket.GPS_minute) + "," + String(currentPacket.GPS_seconds) + ",";
      ret += String(currentPacket.temp_tempC) + ",";
      ret += String(currentPacket.baro_pressure) + "," + String(currentPacket.baro_altitude) + "," + String(currentPacket.baro_tempC);
-     return ret;
+    
+    if (myFile && !sdFail ) {
+      myFile.println(ret);    // close the file:
+      myFile.close();
+    }else {
+    // if the file didn't open, print an error:
+      Serial.println("error opening test.txt");
+    }
+    Serial.println(ret);
+    return ret;
 }
 
 void setup() {
@@ -44,7 +77,20 @@ void setup() {
   mySerial.begin(115200);
   Serial.println("SD Script:");
   Serial.println(sizeof(datapacket));
-}
+  
+  // Open serial communications and wait for port to open:
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB port only
+  }
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin(4)) {
+    Serial.println("SD initialization failed!");
+    sdFail = true;
+   }
+   Serial.println("SD initialization succeeded.");
+   sdFail = false;
+  }
 
 int i = 0;
 byte rx_buf[sizeof(datapacket)] = {0};
