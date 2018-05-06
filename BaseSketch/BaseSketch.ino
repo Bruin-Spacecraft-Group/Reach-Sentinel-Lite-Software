@@ -13,7 +13,7 @@
 #include <SoftwareSerial.h>
 // If using software serial, keep this line enabled
 // (you can change the pin numbers to match your wiring):
-SoftwareSerial mySerial(3, 2); // (RX, TX)
+SoftwareSerial mySerial(4, 3); // (RX, TX)
 SoftwareSerial toTheSDArduino(5, 6);
 Adafruit_GPS GPS(&mySerial);
 
@@ -390,7 +390,7 @@ bool getGPSData(struct datapacket* packet) {
   // we end up not listening and catching other sentences! 
   // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
   //Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
-  
+  Serial.println(F("GPS:No Sentence!"));
     if (!GPS.parse(GPS.lastNMEA())) {   // this also sets the newNMEAreceived() flag to false
       packet->GPS_latitude = myNAN;
       packet->GPS_longitude = myNAN;
@@ -410,6 +410,7 @@ bool getGPSData(struct datapacket* packet) {
     packet->GPS_minute = GPS.minute;
     packet->GPS_seconds = GPS.seconds;
   } else {
+    Serial.println(F("GPS:No Fix"));
     packet->GPS_latitude = 0;
     packet->GPS_longitude = 0;
     packet->GPS_altitude = 0;
