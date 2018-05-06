@@ -19,6 +19,7 @@
 
 File myFile;
 bool sdFail = true;
+int chipSelect = 4;
 
 // 1421 Right
 // 1411 Left 
@@ -84,7 +85,7 @@ void setup() {
   }
   Serial.print("Initializing SD card...");
 
-  if (!SD.begin(4)) {
+  if (!SD.begin(chipSelect)) {
     Serial.println("SD initialization failed!");
     sdFail = true;
    }
