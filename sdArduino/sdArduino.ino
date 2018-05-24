@@ -69,20 +69,21 @@ String unpack_packet(uint8_t* recvbuf) {
     // if the file didn't open, print an error:
       Serial.println("error opening test.txt");
     }
-    Serial.println(ret);
+    //Serial.println(ret);
     return ret;
 }
 
 void setup() {
   Serial.begin(115200);
   mySerial.begin(115200);
+  pinMode(3, INPUT);
   Serial.println("SD Script:");
   Serial.println(sizeof(datapacket));
   
   // Open serial communications and wait for port to open:
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
+//  while (!Serial) {
+//    ; // wait for serial port to connect. Needed for native USB port only
+//  }
   Serial.print("Initializing SD card...");
 
   if (!SD.begin(chipSelect)) {
@@ -98,7 +99,7 @@ byte rx_buf[sizeof(datapacket)] = {0};
 
 void loop() {
   if(mySerial.available()) {
-    char c = mySerial.read();    
+    char c = mySerial.read();   
     if (c == '\n') {
       Serial.println(unpack_packet(rx_buf));
       i = 0;
