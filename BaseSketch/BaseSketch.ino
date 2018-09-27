@@ -324,11 +324,11 @@ bool getAccelerometerData(struct datapacket* packet) {
 
 bool getTemperatureData(struct datapacket* packet) {
   // Read and populate datapacket with the temperature, then convert to *F
-  if(!TEMP_FLAG) {
-    packet->temp_tempC = myNAN;
-    
-    return false;
-  }
+//  if(!TEMP_FLAG) {
+//    packet->temp_tempC = myNAN;
+//    
+//    return false;
+//  }
   
   float c = tempsensor.readTempC();
   float f = c * 9.0 / 5.0 + 32;
